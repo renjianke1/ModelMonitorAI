@@ -8,6 +8,7 @@
     providers: [],
     chatHistory: [],
     tokenStats: { total: 0, byModel: [] },
-    deadModels: []
+    deadModels: [],
+    healthRecords: []
   };
 })(window);

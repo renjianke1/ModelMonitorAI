@@ -3,14 +3,14 @@ export const stats = { models: 128, channels: 12, alive: 9, failed: 3 };
 export const checkedModels = [
   { name:'GPT-4o', id:'gpt-4o', status:'alive', latency:820 },
   { name:'Claude 3.5 Sonnet', id:'claude-3-5-sonnet', status:'alive', latency:1120 },
-  { name:'DeepSeek V3', id:'deepseek-chat', status:'failed', latency:'Timeout' },
+  { name:'DeepSeek V3', id:'deepseek-chat', status:'failed', latency:'Timeout', errorCode:'Timeout', message:'请求超时' },
   { name:'Gemini 2.5 Pro', id:'gemini-2.5-pro', status:'alive', latency:960 },
   { name:'Qwen Max', id:'qwen-max', status:'alive', latency:740 },
-  { name:'GLM-4-Plus', id:'glm-4-plus', status:'failed', latency:'503' },
+  { name:'GLM-4-Plus', id:'glm-4-plus', status:'failed', latency:'503', errorCode:'503', message:'服务暂时不可用' },
   { name:'MiniMax-01', id:'MiniMax-01', status:'alive', latency:1380 },
   { name:'混元 Turbo', id:'hunyuan-turbo', status:'alive', latency:890 },
   { name:'GPT-4-turbo', id:'gpt-4-turbo', status:'alive', latency:1050 },
-  { name:'DeepSeek V2', id:'deepseek-chat-v2', status:'failed', latency:'Timeout' }
+  { name:'DeepSeek V2', id:'deepseek-chat-v2', status:'failed', latency:'Timeout', errorCode:'Timeout', message:'请求超时' }
 ];
 
 export const modelSeries = [
@@ -39,7 +39,7 @@ export const tokenUsage = [
 ];
 
 export const deadModels = [
-  { name:'DeepSeek V2', id:'deepseek-chat-v2', channel:'聚合渠道 A', reason:'Timeout', checked:'2026-08-08 20:10' },
-  { name:'DeepSeek V3', id:'deepseek-chat', channel:'聚合渠道 A', reason:'连接超时', checked:'2026-08-08 20:08' },
-  { name:'GLM-4-Plus', id:'glm-4-plus', channel:'智谱渠道', reason:'HTTP 503', checked:'2026-08-08 20:05' }
+  { name:'DeepSeek V2', id:'deepseek-chat-v2', channel:'聚合渠道 A', reason:'Timeout', errorCode:'Timeout', message:'请求超时', httpStatus:'—', rawResponse:'Request timed out after 30 seconds', checked:'2026-08-08 20:10' },
+  { name:'DeepSeek V3', id:'deepseek-chat', channel:'聚合渠道 A', reason:'连接超时', errorCode:'403', message:'API Key 无效', httpStatus:403, rawResponse:'{"error":{"message":"Invalid API key","type":"authentication_error"}}', checked:'2026-08-08 20:08' },
+  { name:'GLM-4-Plus', id:'glm-4-plus', channel:'智谱渠道', reason:'HTTP 503', errorCode:'503', message:'服务暂时不可用', httpStatus:503, rawResponse:'{"error":{"message":"Service temporarily unavailable"}}', checked:'2026-08-08 20:05' }
 ];
