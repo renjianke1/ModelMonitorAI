@@ -68,7 +68,10 @@
   };
 
   // 先用 MockAPI 填充全局状态；未来替换为真实 API 时只需替换这一层。
-  global.MockAPI.getModels().then(data => { global.AppStore.models = data; });
+  global.MockAPI.getModels().then(data => {
+    global.AppStore.models = data;
+    global.AppStore.healthRecords = data.filter(model => model.status === 'failed').map(model => ({ modelId: model.id, status: 'failed', errorCode: model.errorCode, message: model.message, httpStatus: model.errorCode === 'Timeout' ? '—' : Number(model.errorCode), rawResponse: model.errorCode === 'Timeout' ? 'Request timed out after 30 seconds' : `{"error":"${model.message}"}`, time: '2026-08-08 20:10' }));
+  });
   global.MockAPI.getProviders().then(data => { global.AppStore.providers = data; });
   global.MockAPI.getTokenStats().then(data => { global.AppStore.tokenStats = data; });
   global.MockAPI.getDeadModels().then(data => { global.AppStore.deadModels = data; });

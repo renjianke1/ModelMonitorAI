@@ -17,22 +17,7 @@ function groupModels(models) {
   return [...groups.values()];
 }
 
-function loadModels() {
-  return Promise.resolve().then(() => window.MockAPI.getModels()).then(models => {
-    window.AppStore.models = models;
-    modelSeries = groupModels(models);
-    refreshModelList();
-    return models;
-  }).catch(error => {
-    console.error('MockAPI.getModels() failed:', error);
-    window.AppStore.models = [];
-    modelSeries = [];
-    refreshModelList();
-    return [];
-  });
-}
-
-const modelsRequest = loadModels();
+modelSeries = groupModels(window.AppStore?.models || []);
 
 export function renderModels() {
   compareMode = false;
@@ -133,7 +118,6 @@ export function bindModels(root, { navigate, onToast }) {
   root.querySelector('#compare-entry').addEventListener('click', () => compareMode ? exitCompareMode(root) : enterCompareMode(root, onToast));
   root.querySelector('#start-inline-compare').addEventListener('click', () => { if (selectedModelIds.size >= 2) navigate('compare'); });
   bindSeriesInteractions(root, activeContext);
-  modelsRequest.then(() => refreshModelList());
 }
 
 function availableCompareChoices() {
