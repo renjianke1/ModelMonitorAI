@@ -47,7 +47,18 @@
     getModels() { return asyncResult(modelData); },
     getProviders() { return asyncResult(providerData); },
     getTokenStats() { return asyncResult(tokenData); },
-    getDeadModels() { return asyncResult(deadModelData); }
+    getDeadModels() { return asyncResult(deadModelData); },
+    discoverModels(channel) {
+      const providerName = channel.name || '新渠道';
+      const providerId = `provider-${Date.now()}`;
+      const models = [
+        { name: `${providerName} Chat`, id: `${providerId}-chat`, series: providerName, status: 'alive', latency: 860, channels: 1 },
+        { name: `${providerName} Reasoner`, id: `${providerId}-reasoner`, series: providerName, status: 'alive', latency: 1040, channels: 1 },
+        { name: `${providerName} Fast`, id: `${providerId}-fast`, series: providerName, status: 'alive', latency: 620, channels: 1 }
+      ];
+      const provider = { id: providerId, name: providerName, url: channel.url, status: 'alive', modelCount: models.length };
+      return new Promise(resolve => setTimeout(() => resolve({ provider, models }), 700));
+    }
   };
 
   // 先用 MockAPI 填充全局状态；未来替换为真实 API 时只需替换这一层。

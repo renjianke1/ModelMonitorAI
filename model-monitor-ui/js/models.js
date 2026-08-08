@@ -1,3 +1,5 @@
+import { openChannelModal } from './channel.js';
+
 let modelSeries = [];
 let activeRoot = null;
 let activeContext = null;
@@ -36,7 +38,7 @@ function loadModels() {
 const modelsRequest = loadModels();
 
 export function renderModels() {
-  return `<header class="page-header"><div><div class="eyebrow">MODEL CATALOG</div><h1>模型列表</h1><div class="muted">按系列管理和检测模型</div></div></header><div class="search-row"><input class="input" id="model-search" placeholder="搜索模型"/><button class="btn btn-small btn-outline" id="compare-entry">对比</button></div><div class="sort-row" id="sort-row"><button class="sort-btn active" data-sort="name">名称</button><button class="sort-btn" data-sort="status">状态</button><button class="sort-btn" data-sort="latency">延迟</button><button class="sort-btn" data-sort="channels">渠道数</button></div><div class="toolbar"><button class="btn btn-small" id="expand-all">全部展开</button><button class="btn btn-small" id="collapse-all">全部收起</button><button class="btn btn-small btn-outline" id="flat-view">平铺视图</button></div><div id="series-list">${renderSeries(modelSeries)}</div><div class="entry-actions"><button class="btn btn-primary" data-action="chat-entry">实测对话</button><button class="btn btn-outline" data-action="compare-entry-bottom">模型对比</button></div>`;
+  return `<header class="page-header"><div><div class="eyebrow">MODEL CATALOG</div><h1>模型列表</h1><div class="muted">按系列管理和检测模型</div></div><button class="btn btn-small btn-outline" data-action="add-channel">添加渠道</button></header><div class="search-row"><input class="input" id="model-search" placeholder="搜索模型"/><button class="btn btn-small btn-outline" id="compare-entry">对比</button></div><div class="sort-row" id="sort-row"><button class="sort-btn active" data-sort="name">名称</button><button class="sort-btn" data-sort="status">状态</button><button class="sort-btn" data-sort="latency">延迟</button><button class="sort-btn" data-sort="channels">渠道数</button></div><div class="toolbar"><button class="btn btn-small" id="expand-all">全部展开</button><button class="btn btn-small" id="collapse-all">全部收起</button><button class="btn btn-small btn-outline" id="flat-view">平铺视图</button></div><div id="series-list">${renderSeries(modelSeries)}</div><div class="entry-actions"><button class="btn btn-primary" data-action="chat-entry">实测对话</button><button class="btn btn-outline" data-action="compare-entry-bottom">模型对比</button></div>`;
 }
 
 function renderSeries(series) {
@@ -45,11 +47,17 @@ function renderSeries(series) {
 
 function refreshModelList() {
   if (!activeRoot) return;
+  if (!document.body.contains(activeRoot)) return;
   const list = activeRoot.querySelector('#series-list');
   if (!list) return;
   list.innerHTML = renderSeries(modelSeries);
   bindSeriesInteractions(activeRoot, activeContext);
 }
+
+window.addEventListener('models:updated', () => {
+  modelSeries = groupModels(window.AppStore.models);
+  refreshModelList();
+});
 
 function bindSeriesInteractions(root, { onToast }) {
   const list = root.querySelector('#series-list');
@@ -97,6 +105,7 @@ export function bindModels(root, { navigate, onToast }) {
     onToast(`已按${button.textContent}排序`);
   }));
   root.querySelector('[data-action="chat-entry"]').addEventListener('click', () => navigate('chat'));
+  root.querySelector('[data-action="add-channel"]').addEventListener('click', () => openChannelModal({ onSuccess: () => onToast('渠道添加成功') }));
   root.querySelector('[data-action="compare-entry-bottom"],#compare-entry').addEventListener('click', () => navigate('compare'));
   bindSeriesInteractions(root, activeContext);
   // 若接口在页面首次渲染后才完成，刷新列表但不改变现有页面结构。
